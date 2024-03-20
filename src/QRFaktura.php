@@ -907,12 +907,16 @@ class QRFaktura
                 $NewString .= $MovedCharArray[$key];
             }
 
-            if(bcmod($NewString, '97') == 1)
-            {
+            if (function_exists("bcmod") === TRUE) {
+                if(bcmod($NewString, '97') == 1)
+                {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            } else {
                 return true;
-            }
-            else{
-                return false;
             }
         }
         else{
