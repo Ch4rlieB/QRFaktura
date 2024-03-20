@@ -697,18 +697,25 @@ class QRFaktura
             }
         }
         else if (strlen($text) > $maxlen) {
-            $this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_TOO_LONG, self::ERR_DESC=>'Hodnota '.$key.'='.$text.' je delší než '.$maxlen.' znaků');
+            //$this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_TOO_LONG, self::ERR_DESC=>'Hodnota '.$key.'='.$text.' je delší než '.$maxlen.' znaků');
+            // Nechceme ERROR, protoze nejsme schopni validovat vsechno co nam prichazi a treba pro nazev firmy je to zbytecne
+            $text = substr($text, 0, $maxlen);
+            $this->setTextKey($text, $key, $isQRPlatba);
         }
         else if ($this->containsStar($text)) { //kontrola na znak *
             $this->errDesc[] = array(self::ERR_CODE=>self::ERR_CODE_BAD_FORMAT, self::ERR_DESC=>'Hodnota '.$key.'='.$text.' obsahuje znak *');
         }
         else {
-            if ($isQRPlatba) {
-                $this->QRP_keys[$key] = $this->stripDiacritics($text);
-            }
-            else {
-                $this->keys[$key] = $this->stripDiacritics($text);
-            }
+            $this->setTextKey($text, $key, $isQRPlatba);
+        }
+    }
+
+    private function setTextKey($text, $key, $isQRPlatba) {
+        if ($isQRPlatba) {
+            $this->QRP_keys[$key] = $this->stripDiacritics($text);
+        }
+        else {
+            $this->keys[$key] = $this->stripDiacritics($text);
         }
     }
 
